@@ -1,10 +1,10 @@
 # stop_watch
 
-A new Flutter project.
+An ad free stop-watch with Neumorphic Design.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+An ad free stop-watch with Neumorphic Design.
 
 A few resources to get you started if this is your first Flutter project:
 
