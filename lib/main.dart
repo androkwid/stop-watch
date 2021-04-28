@@ -23,11 +23,10 @@ class MyApp extends StatelessWidget {
       title: 'Stop Watch',
       debugShowCheckedModeBanner: false,
       theme: NeuThemeData(
-        lightSource: LightSource.topRight,
+        lightSource: LightSource.bottomLeft,
         platform: TargetPlatform.iOS,
         primarySwatch: Colors.blue,
         backgroundColor: Color.lerp(_color, Colors.black, 0.005),
-        buttonColor: Colors.amber,
         scaffoldBackgroundColor: _color,
         dialogBackgroundColor: Colors.grey[300],
         appBarTheme: AppBarTheme(

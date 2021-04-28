@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:neumorphic/neumorphic.dart';
 
@@ -13,18 +14,26 @@ class _WatchScreenState extends State<WatchScreen> {
   Stopwatch _stopwatch;
   Timer _timer;
   List<String> _laps;
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final List<Color> _colors = [Color(0XFFf06c00), Color(0XEDf06c00)];
+  double _bevelr = 5.0, _bevels = 5.0, _bevell = 5.0;
+  CurveType _curveTyper = CurveType.flat,
+      _curveTypes = CurveType.flat,
+      _curveTypel = CurveType.flat;
+  int _previousLap = 0;
 
   @override
   void initState() {
     super.initState();
     _stopwatch = Stopwatch();
     _laps = [];
+    _previousLap = 0;
   }
 
   void handleStartStop(String btn) {
     switch (btn) {
       case 'r':
+        _previousLap = 0;
         _stopwatch.reset(); // Reset
         break;
       case 's':
@@ -34,7 +43,15 @@ class _WatchScreenState extends State<WatchScreen> {
         break;
       case 'l':
         {
-          _laps.add(formatTime(_stopwatch.elapsedMilliseconds).toString());
+          int lap = _stopwatch.elapsedMilliseconds - _previousLap;
+          _previousLap = _stopwatch.elapsedMilliseconds;
+          _laps.add(formatTime(lap).toString());
+          Flushbar(
+            message: "New lap added",
+            flushbarStyle: FlushbarStyle.FLOATING,
+            backgroundColor: Colors.transparent,
+            duration: Duration(seconds: 2),
+          )..show(context);
         } // lap
         break;
     }
@@ -42,7 +59,14 @@ class _WatchScreenState extends State<WatchScreen> {
     _timer = new Timer.periodic(new Duration(milliseconds: 30), (timer) {
       setState(() {});
     });
-    setState(() {}); // re-render the page
+    setState(() {
+      _curveTyper = CurveType.flat;
+      _curveTypes = CurveType.flat;
+      _curveTypel = CurveType.flat;
+      _bevelr = 5.0;
+      _bevels = 5.0;
+      _bevell = 5.0;
+    }); // re-render the page
   }
 
   @override
@@ -53,30 +77,29 @@ class _WatchScreenState extends State<WatchScreen> {
       top: true,
       child: Scaffold(
         body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 0),
           width: _size.width,
           height: _size.height,
           decoration: BoxDecoration(
             color: Color(0XFF121212),
-            // gradient: LinearGradient(
-            //   begin: Alignment.topCenter,
-            //   end: Alignment.bottomCenter,
-            //   colors: _colors,
-            // ),
           ),
           alignment: Alignment.center,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                padding: EdgeInsets.only(top: 30),
+                padding: EdgeInsets.only(top: 30, bottom: 30),
                 child: Center(
-                  child: Text(
+                  child: NeuText(
                     formatTime(_stopwatch.elapsedMilliseconds),
+                    emboss: false,
+                    parentColor: Colors.black,
+                    spread: 2,
+                    depth: 100,
                     style: TextStyle(
-                        color: Colors.redAccent,
+                        color: Colors.red,
                         fontWeight: FontWeight.w500,
-                        fontSize: 42),
+                        fontSize: 62),
                   ),
                 ),
               ),
@@ -122,6 +145,12 @@ class _WatchScreenState extends State<WatchScreen> {
                     onTap: () {
                       handleStartStop('r');
                     },
+                    onTapDown: (details) {
+                      setState(() {
+                        _curveTyper = CurveType.concave;
+                        _bevelr = 0.0;
+                      });
+                    },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 20),
                       alignment: Alignment.center,
@@ -130,19 +159,19 @@ class _WatchScreenState extends State<WatchScreen> {
                         height: 75,
                         alignment: Alignment.center,
                         padding: EdgeInsets.symmetric(vertical: 15),
-                        bevel: 12,
+                        bevel: _bevelr,
                         decoration: NeumorphicDecoration(
                             borderRadius: BorderRadius.circular(100)),
                         color: Colors.amber,
-                        curveType: CurveType.concave,
+                        curveType: _curveTyper,
                         child: Text(
                           'Reset',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                              fontSize: 22,
                               color: _stopwatch.isRunning
                                   ? Colors.red
-                                  : Colors.green),
+                                  : Colors.blue),
                         ),
                       ),
                     ),
@@ -150,6 +179,12 @@ class _WatchScreenState extends State<WatchScreen> {
                   InkWell(
                     onTap: () {
                       handleStartStop('s');
+                    },
+                    onTapDown: (details) {
+                      setState(() {
+                        _curveTypes = CurveType.concave;
+                        _bevels = 0.0;
+                      });
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 20),
@@ -159,19 +194,19 @@ class _WatchScreenState extends State<WatchScreen> {
                         height: 150,
                         alignment: Alignment.center,
                         padding: EdgeInsets.symmetric(vertical: 15),
-                        bevel: 12,
+                        bevel: _bevels,
                         decoration: NeumorphicDecoration(
                             borderRadius: BorderRadius.circular(100)),
                         color: Colors.amber,
-                        curveType: CurveType.concave,
+                        curveType: _curveTypes,
                         child: Text(
                           _stopwatch.isRunning ? 'Stop' : 'Start',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 24,
+                              fontSize: 30,
                               color: _stopwatch.isRunning
                                   ? Colors.red
-                                  : Colors.green),
+                                  : Colors.blue),
                         ),
                       ),
                     ),
@@ -179,6 +214,12 @@ class _WatchScreenState extends State<WatchScreen> {
                   InkWell(
                     onTap: () {
                       handleStartStop('l');
+                    },
+                    onTapDown: (details) {
+                      setState(() {
+                        _curveTypel = CurveType.concave;
+                        _bevell = 0.0;
+                      });
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 20),
@@ -188,19 +229,19 @@ class _WatchScreenState extends State<WatchScreen> {
                         height: 75,
                         alignment: Alignment.center,
                         padding: EdgeInsets.symmetric(vertical: 15),
-                        bevel: 12,
+                        bevel: _bevell,
                         decoration: NeumorphicDecoration(
                             borderRadius: BorderRadius.circular(100)),
                         color: Colors.amber,
-                        curveType: CurveType.concave,
+                        curveType: _curveTypel,
                         child: Text(
                           'Lap',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                              fontSize: 22,
                               color: _stopwatch.isRunning
                                   ? Colors.red
-                                  : Colors.green),
+                                  : Colors.blue),
                         ),
                       ),
                     ),
