@@ -1,10 +1,10 @@
 # stop_watch
 
-An ad free stop-watch with Neumorphic Design.
+This is a free flutter code for StopWatch application. Enjoy!
 
 ## Getting Started
 
-An ad free stop-watch with Neumorphic Design.
+This is a free flutter code for StopWatch application. Enjoy!
 
 A few resources to get you started if this is your first Flutter project:
 
